@@ -1,19 +1,19 @@
 from .interface import Loss
-import numpy as np
+import tensorflow as tf
 
 
 class MeanSquaredErrorLoss(Loss):
 
-    def calculate(self, y_batch: np.ndarray, y_hat_batch: np.ndarray, reduction=None) -> np.ndarray:
+    def calculate(self, y_batch: tf.Tensor, y_hat_batch: tf.Tensor, reduction=None) -> tf.Tensor:
         """
         Calculate the loss function using the mean squared error (MSE) formula.
 
         Parameters
         ----------
-        y_batch: np.ndarray
-            array of a batch of training targets, a numpy array of shape (M, 3)
-        y_hat_batch: np.ndarray
-            array of a batch of predictions, a numpy array of shape (M, K, 3)
+        y_batch: tf.Tensor
+            tensor of a batch of training targets, a numpy array of shape (M, 3)
+        y_hat_batch: tf.Tensor
+            tensor of a batch of predictions, a numpy array of shape (M, K, 3)
         reduction: str
             specifies the type of reduction to be used, by default is None, i.e. no reduction will be done and the
             function will return all the computed loss values
@@ -21,8 +21,8 @@ class MeanSquaredErrorLoss(Loss):
 
         Returns
         -------
-        np_loss: np.ndarray
-            a numpy array of the (reduced) computed losses
+        tf_loss: tf.Tensor
+            a tensor of the (reduced) computed losses
         """
         if y_batch is None or y_hat_batch is None:
             raise ValueError('y_batch and y_hat_batch must not be null.')
@@ -35,16 +35,17 @@ class MeanSquaredErrorLoss(Loss):
         # loop through the M batches
         for i in range(y_hat_batch.shape[0]):
             target = y_batch[i]
+            length = target.shape.as_list()[0]
             # loop through the K predictions
             for j in range(y_hat_batch.shape[1]):
                 y_hat = y_hat_batch[i, j]
                 loss_val = 0
                 for x, y in zip(target, y_hat):
-                    loss_val += ((x - y)**2) / len(target)
-                loss.append(loss_val)
+                    loss_val += ((x - y)**2) / length
+                loss.append(tf.reshape(loss_val, [1]))
 
-        np_loss = np.array(loss, dtype=np.float32).reshape((len(loss), 1))
+        tf_loss = tf.stack(loss)
         if reduction is None:
-            return np_loss
+            return tf_loss
         else:
-            return self.reduce(np_loss, reduction)
+            return self.reduce(tf_loss, reduction)
