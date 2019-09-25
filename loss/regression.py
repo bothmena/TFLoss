@@ -4,12 +4,25 @@ import numpy as np
 
 class MeanSquaredErrorLoss(Loss):
 
-    def calculate(self, y_batch: np.ndarray, y_hat_batch: np.ndarray, reduction=None):
+    def calculate(self, y_batch: np.ndarray, y_hat_batch: np.ndarray, reduction=None) -> np.ndarray:
         """
-        :param reduction:
-        :param y_batch:
-        :param y_hat_batch:
-        :return:
+        Calculate the loss function using the mean squared error (MSE) formula.
+
+        Parameters
+        ----------
+        y_batch: np.ndarray
+            array of a batch of training targets, a numpy array of shape (M, 3)
+        y_hat_batch: np.ndarray
+            array of a batch of predictions, a numpy array of shape (M, K, 3)
+        reduction: str
+            specifies the type of reduction to be used, by default is None, i.e. no reduction will be done and the
+            function will return all the computed loss values
+            possible values of reduction are: min, max and mean.
+
+        Returns
+        -------
+        np_loss: np.ndarray
+            a numpy array of the (reduced) computed losses
         """
         if y_batch is None or y_hat_batch is None:
             raise ValueError('y_batch and y_hat_batch must not be null.')
