@@ -30,4 +30,8 @@ class MeanSquaredErrorLoss(Loss):
                     loss_val += ((x - y)**2) / len(target)
                 loss.append(loss_val)
 
-        return np.array(loss, dtype=np.float32).reshape((len(loss), 1))
+        np_loss = np.array(loss, dtype=np.float32).reshape((len(loss), 1))
+        if reduction is None:
+            return np_loss
+        else:
+            return self.reduce(np_loss, reduction)
