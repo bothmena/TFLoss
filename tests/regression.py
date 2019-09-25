@@ -19,8 +19,9 @@ class TestMeanSquaredErrorLoss(TestCase):
 
     def test_loss_value_reduction_none(self):
         loss_value = self.loss(self.y_batch, self.y_hat_batch)
-        self.assertEqual(loss_value.all(), np.array([0, 1, 4], dtype=np.float32).all())
-        self.assertEqual(loss_value.shape, (3,))
+        target = np.array([0, 1, 4], dtype=np.float32).reshape((3, 1))
+        np.testing.assert_array_equal(loss_value, target)
+        self.assertEqual(loss_value.shape, (3, 1))
 
     def test_loss_value_reduction_min(self):
         loss_value = self.loss(self.y_batch, self.y_hat_batch, reduction='min')
