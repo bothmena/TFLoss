@@ -34,3 +34,28 @@ Assume that the inputs to your loss function is a batch of targets, of shape (**
 estimates, of shape (**M**, **K**, 3). 
 
 Come up with a reasonable way of scoring such a function.
+
+---
+---
+
+# Documentation and Discussion
+
+This task was developed using the TDD approach, but the written tests do not cover all cases.
+
+The repository have 2 branches:
+- master: contains an implementation of the loss function using numpy arrays as a data structure.
+- tf-api: contains an implementation of the loss function using TensorFlow Tensors as a data structure.
+
+So as mentioned above in the task definition, the loss function has two inputs: y_batch of shape (M, 3) and y_hat_batch of shape (M, K, 3).
+
+The current implementation of the loss is that we compute the mean square error between the input target and all the K predictions. 
+
+A reduction method can also be specified, and it can take 4 different values:
+- None: default behavior, the loss function returns an array of shape (K, 1) which is the loss function between all predictions and the real value (target).
+- min: the loss function only returns a scalar which is the minimum value of the loss for all K predictions
+- max:  the loss function only returns a scalar which is the maximum value of the loss for all K predictions
+- mean: the loss function only returns a scalar which is the mean value of the loss for all K predictions
+
+In my opinion, using the mean reduction is the best option, because we will be able to minimize all the predictions
+the model is making and because mean is easier to differentiate than min and max. Also the mean gives us a better
+understanding of the performance of the model, especially when compared with previous loss values.
